@@ -1,22 +1,66 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Generator</title>
+    <title>إنشاء الفواتير</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <header>
-        <h1>তসরিহ আজির - তসরিহ ফাউন্ড</h1> 
+        <img src="logo.png" alt="Logo">
+        <h1>تصريح أجير - تصريح فاوند</h1>
     </header>
 
     <main>
-        <!-- ফর্ম এবং ইনভয়েস এখানে যোগ করা হবে -->
-    </main>
+        <p>للتبرع من داخل المملكة العربية السعودية من حساب المستفيد إلى حساب المؤسسة عبر الإيداع أو التحويل البنكي</p>
+        
+        <form id="invoiceForm">
+            <div class="formElement">
+                <label for="name">المفوض بالتبرع:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
+            <div class="formElement">
+                <label for="phone">الجنسية:</label>  
+                <input type="text" id="nationality" name="nationality" required>
+            </div>
+
+            <div class="formElement">
+                <label for="invoiceType">رقم الهوية / الإقامة:</label>
+                <input type="text" id="idNumber" name="idNumber" required>
+            </div>
+
+            <div class="formElement">
+                <label for="amount">بيانات مقدم الخدمة:</label>
+                <div class="providerDetails">
+                    <p>رقم الآيبان في البنك الأهلي</p>
+                    <p><strong>4-202901</strong></p>
+                    <p>SA3610000020345876112345</p>
+                </div>
+            </div>
+            
+            <div class="formElement">
+                <label for="amount">بيانات المستفيد من الخدمة:</label>
+                <div class="recipientDetails">
+                    <p>مؤسسة سناب الغذائية</p>
+                    <p>للمقاولات</p>
+                </div>
+            </div>
+
+            <div class="submitButton">
+                <button type="submit">إنشاء</button>
+            </div>
+        </form>
+        
+        <div id="invoice"></div>
+    </main>
+    
     <footer>
-        <p>কারিগরি সহযোগিতায়: এন্টারপ্রাইজ সিস্টেম সলিউশন</p>
+        <p>نسخة من هذا التبرع يجب إيداعها عند إدارة المؤسسة للحصول على إيصال سداد رسمي</p>
+        <p>أي مبلغ تقوم بالتبرع به لا يتطلب تصريح آخر</p>
+        <p>إن تعذر عليك التبرع فنرجو أن تشاركنا بدعائك وأن تعلمنا به</p>
     </footer>
 
     <script src="script.js"></script>
