@@ -58,17 +58,43 @@
     border: 1px solid #ccc;
     display: none;
   }
+
+  /* হেডার - এই অংশ সবসময় ফিক্সড থাকবে, কখনো পরিবর্তন হবে না */
   .paperHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 2px solid #1a6b3c;
-    padding-bottom: 10px;
+    align-items: stretch;
+    border: 1px solid #999;
   }
-  .paperHeader .qrBox { text-align: center; font-size: 11px; }
-  .paperHeader .titleBox { text-align: center; flex:1; }
+  .paperHeader .qrBox {
+    text-align: center;
+    font-size: 11px;
+    padding: 10px;
+    border-left: 1px solid #999;
+    width: 160px;
+    flex-shrink: 0;
+  }
+  .paperHeader .titleBox {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
   .paperHeader .titleBox h1 { font-size: 20px; margin: 0; }
-  .paperHeader .logoBox { text-align: center; font-size: 12px; color:#1a6b3c; font-weight:bold; }
+  .paperHeader .logoBox {
+    text-align: center;
+    font-size: 12px;
+    color:#1a6b3c;
+    font-weight:bold;
+    padding: 10px;
+    border-right: 1px solid #999;
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
   .introText {
     text-align: center;
@@ -131,7 +157,7 @@
   <label>কোড নম্বর (QR এর নিচে, যেমন TQ4598344)</label>
   <input type="text" id="codeNumber" value="TQ4598344">
 
-  <h3>বিয়ানাত আল-আমিল (العامل)</h3>
+  <h3>بيانات العامل</h3>
   <label>اسم العامل (নাম)</label>
   <input type="text" id="workerName">
 
