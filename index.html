@@ -1,68 +1,273 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء الفواتير</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تصريح أجير - مولد</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: Arial, Tahoma, sans-serif;
+    background: #eee;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* ফর্ম অংশ */
+  .formWrap {
+    max-width: 650px;
+    margin: 0 auto 30px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .formWrap h2 { text-align: center; }
+  .formWrap label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .formWrap input, .formWrap textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  .formWrap button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: #1a6b3c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* জেনারেটেড পেপার অংশ */
+  #paper {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #ccc;
+    display: none;
+  }
+  .paperHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #1a6b3c;
+    padding-bottom: 10px;
+  }
+  .paperHeader .qrBox { text-align: center; font-size: 11px; }
+  .paperHeader .titleBox { text-align: center; flex:1; }
+  .paperHeader .titleBox h1 { font-size: 20px; margin: 0; }
+  .paperHeader .logoBox { text-align: center; font-size: 12px; color:#1a6b3c; font-weight:bold; }
+
+  .introText {
+    text-align: center;
+    font-size: 13px;
+    margin: 20px 0;
+    line-height: 1.8;
+  }
+
+  table.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  table.dataTable th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 8px;
+    text-align: center;
+  }
+  table.dataTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  table.dataTable td.labelCell {
+    background: #f0f0f0;
+    width: 35%;
+    font-weight: bold;
+  }
+
+  .declareTitle {
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0 10px 0;
+  }
+  .declareBox p { font-weight: bold; text-align:center; }
+  .declareBox ul { font-size: 13px; line-height: 1.8; padding-right: 20px; }
+
+  .paperFooter {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 25px;
+    color: #555;
+  }
+
+  @media print {
+    .formWrap, button { display: none !important; }
+    #paper { display: block !important; border: none; }
+  }
+</style>
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="Logo">
-        <h1>تصريح أجير - تصريح فاوند</h1>
-    </header>
 
-    <main>
-        <p>للتبرع من داخل المملكة العربية السعودية من حساب المستفيد إلى حساب المؤسسة عبر الإيداع أو التحويل البنكي</p>
-        
-        <form id="invoiceForm">
-            <div class="formElement">
-                <label for="name">المفوض بالتبرع:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
+<div class="formWrap" id="formWrap">
+  <h2>তথ্য দিন</h2>
 
-            <div class="formElement">
-                <label for="phone">الجنسية:</label>  
-                <input type="text" id="nationality" name="nationality" required>
-            </div>
+  <label>QR কোডে কি লেখা শো করবে (স্ক্যান করলে)</label>
+  <textarea id="qrContent" rows="3">এখানে আপনার পছন্দের তথ্য লিখুন</textarea>
 
-            <div class="formElement">
-                <label for="invoiceType">رقم الهوية / الإقامة:</label>
-                <input type="text" id="idNumber" name="idNumber" required>
-            </div>
+  <label>কোড নম্বর (QR এর নিচে, যেমন TQ4598344)</label>
+  <input type="text" id="codeNumber" value="TQ4598344">
 
-            <div class="formElement">
-                <label for="amount">بيانات مقدم الخدمة:</label>
-                <div class="providerDetails">
-                    <p>رقم الآيبان في البنك الأهلي</p>
-                    <p><strong>4-202901</strong></p>
-                    <p>SA3610000020345876112345</p>
-                </div>
-            </div>
-            
-            <div class="formElement">
-                <label for="amount">بيانات المستفيد من الخدمة:</label>
-                <div class="recipientDetails">
-                    <p>مؤسسة سناب الغذائية</p>
-                    <p>للمقاولات</p>
-                </div>
-            </div>
+  <h3>বিয়ানাত আল-আমিল (العامل)</h3>
+  <label>اسم العامل (নাম)</label>
+  <input type="text" id="workerName">
 
-            <div class="submitButton">
-                <button type="submit">إنشاء</button>
-            </div>
-        </form>
-        
-        <div id="invoice"></div>
-    </main>
-    
-    <footer>
-        <p>نسخة من هذا التبرع يجب إيداعها عند إدارة المؤسسة للحصول على إيصال سداد رسمي</p>
-        <p>أي مبلغ تقوم بالتبرع به لا يتطلب تصريح آخر</p>
-        <p>إن تعذر عليك التبرع فنرجو أن تشاركنا بدعائك وأن تعلمنا به</p>
-    </footer>
+  <label>المهنة (পেশা)</label>
+  <input type="text" id="profession">
 
-    <script src="script.js"></script>
+  <label>رقم الهوية / الإقامة</label>
+  <input type="text" id="idNumber">
+
+  <label>الجنسية</label>
+  <input type="text" id="nationality">
+
+  <h3>بيانات مقدم الخدمة</h3>
+  <label>المنشأة المقدمة للخدمة</label>
+  <input type="text" id="providerName">
+
+  <label>رقم المنشأة في وزارة الموارد البشرية</label>
+  <input type="text" id="providerNumber">
+
+  <h3>بيانات المستفيد من الخدمة</h3>
+  <label>المنشأة المستفيدة من الخدمة</label>
+  <input type="text" id="beneficiaryName">
+
+  <label>رقم المنشأة في وزارة الموارد البشرية</label>
+  <input type="text" id="beneficiaryNumber">
+
+  <h3>بيانات التصريح</h3>
+  <label>نبذة عن التعاقد</label>
+  <input type="text" id="contractSummary">
+
+  <label>تاريخ بداية التصريح</label>
+  <input type="date" id="startDate">
+
+  <label>تاريخ نهاية التصريح</label>
+  <input type="date" id="endDate">
+
+  <label>مواقع العمل</label>
+  <input type="text" id="workLocations">
+
+  <button onclick="generatePaper()">জেনারেট করুন</button>
+</div>
+
+<div id="paper">
+  <div class="paperHeader">
+    <div class="qrBox">
+      <div id="qrcode"></div>
+      <div id="codeNumberShow"></div>
+    </div>
+    <div class="titleBox">
+      <h1>تصريح أجير – تعاقد أجير</h1>
+    </div>
+    <div class="logoBox">
+      أجير<br>AJEER<br>الموارد البشرية<br>والتنمية الاجتماعية
+    </div>
+  </div>
+
+  <div class="introText">
+    نشعركم أنه تم التعاقد من قبلنا كجهة مقدمة للخدمة مع الجهة المستفيدة من الخدمة حسب المعلومات المبينة أدناه،
+    ولذلك تم تسجيل معلومات العقد لتكون بحوزة العامل لإثبات عدم مخالفته لنظام العمل ولتقديمها إلى من يهمه الأمر
+    من الجهات المختصة عند طلبها للتحقق من صحة تواجده في مكان تقديم الخدمة
+  </div>
+
+  <table class="dataTable">
+    <tr><th colspan="2">بيانات العامل</th></tr>
+    <tr><td class="labelCell">اسم العامل</td><td id="p_workerName"></td></tr>
+    <tr><td class="labelCell">المهنة</td><td id="p_profession"></td></tr>
+    <tr><td class="labelCell">رقم الهوية / الإقامة</td><td id="p_idNumber"></td></tr>
+    <tr><td class="labelCell">الجنسية</td><td id="p_nationality"></td></tr>
+  </table>
+
+  <table class="dataTable">
+    <tr><th colspan="2">بيانات مقدم الخدمة</th></tr>
+    <tr><td class="labelCell">المنشأة المقدمة للخدمة</td><td id="p_providerName"></td></tr>
+    <tr><td class="labelCell">رقم المنشأة في وزارة الموارد البشرية و التنمية الإجتماعية</td><td id="p_providerNumber"></td></tr>
+  </table>
+
+  <table class="dataTable">
+    <tr><th colspan="2">بيانات المستفيد من الخدمة</th></tr>
+    <tr><td class="labelCell">المنشأة المستفيدة من الخدمة</td><td id="p_beneficiaryName"></td></tr>
+    <tr><td class="labelCell">رقم المنشأة في وزارة الموارد البشرية و التنمية الإجتماعية</td><td id="p_beneficiaryNumber"></td></tr>
+  </table>
+
+  <table class="dataTable">
+    <tr><th colspan="2">بيانات التصريح</th></tr>
+    <tr><td class="labelCell">نبذة عن التعاقد</td><td id="p_contractSummary"></td></tr>
+    <tr><td class="labelCell">تاريخ بداية التصريح</td><td id="p_startDate"></td></tr>
+    <tr><td class="labelCell">تاريخ نهاية التصريح</td><td id="p_endDate"></td></tr>
+    <tr><td class="labelCell">مواقع العمل</td><td id="p_workLocations"></td></tr>
+  </table>
+
+  <div class="declareTitle">إقرارات</div>
+  <div class="declareBox">
+    <p>أقر أنا المنشأة المقدمة للخدمة والموضحة بياناتي أعلاه وأتعهد بـ:</p>
+    <ul>
+      <li>إن العامل حامل هذا التصريح بحمله له يقر ويتعهد بأن البيانات المدونة فيه صحيحة على مسؤوليته الشخصية، وأنه يعمل لدى المنشأة ولحسابها، بموجب إقامة رخصة سارية المفعول. وأتحمل أي تبعات قانونية أو غرامات تترتب على خلاف المذكور أعلاه.</li>
+      <li>الالتزام والتقيد بأنظمة العمل والعمال وأي أنظمة و لوائح وقرارات أخرى ذات علاقة.</li>
+      <li>أن الموقع الإلكتروني الخاص بأجير أو القائمين عليه عبارة عن وسيط إلكتروني ما بين الباحثين عن العمل وأصحاب الأعمال فقط وبدون أي التزام قانوني أو غيره على القائمين على موقع أجير.</li>
+      <li>أي تعديل أو كشط في هذا التصريح يجعله لاغياً.</li>
+    </ul>
+  </div>
+
+  <div class="paperFooter">
+    للتحقق من صحة هذا التصريح وسريان مفعوله بإمكانك زيارة موقع أجير (https://ajeer.com.sa)<br>
+    * خدمة معتمدة من وزارة الموارد البشرية والتنمية الاجتماعية *
+  </div>
+
+  <button onclick="window.print()" style="margin-top:20px;width:100%;padding:12px;">প্রিন্ট করুন</button>
+</div>
+
+<script>
+function generatePaper() {
+  document.getElementById('p_workerName').innerText = document.getElementById('workerName').value;
+  document.getElementById('p_profession').innerText = document.getElementById('profession').value;
+  document.getElementById('p_idNumber').innerText = document.getElementById('idNumber').value;
+  document.getElementById('p_nationality').innerText = document.getElementById('nationality').value;
+  document.getElementById('p_providerName').innerText = document.getElementById('providerName').value;
+  document.getElementById('p_providerNumber').innerText = document.getElementById('providerNumber').value;
+  document.getElementById('p_beneficiaryName').innerText = document.getElementById('beneficiaryName').value;
+  document.getElementById('p_beneficiaryNumber').innerText = document.getElementById('beneficiaryNumber').value;
+  document.getElementById('p_contractSummary').innerText = document.getElementById('contractSummary').value;
+  document.getElementById('p_startDate').innerText = document.getElementById('startDate').value;
+  document.getElementById('p_endDate').innerText = document.getElementById('endDate').value;
+  document.getElementById('p_workLocations').innerText = document.getElementById('workLocations').value;
+  document.getElementById('codeNumberShow').innerText = document.getElementById('codeNumber').value;
+
+  document.getElementById('qrcode').innerHTML = '';
+  new QRCode(document.getElementById('qrcode'), {
+    text: document.getElementById('qrContent').value,
+    width: 90,
+    height: 90
+  });
+
+  document.getElementById('paper').style.display = 'block';
+  document.getElementById('paper').scrollIntoView({behavior:'smooth'});
+}
+</script>
+
 </body>
 </html>
